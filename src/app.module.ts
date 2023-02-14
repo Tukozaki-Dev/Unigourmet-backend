@@ -6,8 +6,10 @@ import { AppService } from './app.service';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({envFilePath: '.env',}), 
-    MongooseModule.forRoot('mongodb://root:dbadmin@unigourmet_mongodb:27017',{dbName: 'unigourmet_db'}),
+    ConfigModule.forRoot({ envFilePath: '.env' }),
+    MongooseModule.forRoot('mongodb://root:dbadmin@unigourmet_mongodb:27017', {
+      dbName: 'unigourmet_db',
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
