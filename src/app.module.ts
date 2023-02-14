@@ -3,11 +3,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { RecipeModule } from './recipe/recipe.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({envFilePath: '.env',}), 
-    MongooseModule.forRoot('mongodb://root:dbadmin@unigourmet_mongodb:27017',{dbName: 'unigourmet_db'}),
+    MongooseModule.forRoot('mongodb://root:dbadmin@unigourmet_mongodb:27017',{dbName: 'unigourmet_db'}), RecipeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
