@@ -15,7 +15,7 @@ import { CoordinatorModule } from './coordinator/coordinator.module';
 import { NoteModule } from './note/note.module';
 @Module({
   imports: [
-    ConfigModule.forRoot({envFilePath: '.env',}), 
+    ConfigModule.forRoot({envFilePath: '.env', isGlobal: true}), 
     MongooseModule.forRoot('mongodb://root:dbadmin@unigourmet_mongodb:27017',{dbName: 'unigourmet_db'}), 
     ProfessorModule, 
     StudentModule, 
