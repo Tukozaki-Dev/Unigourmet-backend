@@ -7,8 +7,10 @@ import { RecipeModule } from './recipe/recipe.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({envFilePath: '.env',}), 
-    MongooseModule.forRoot('mongodb://root:dbadmin@unigourmet_mongodb:27017',{dbName: 'unigourmet_db'}), RecipeModule,
+    ConfigModule.forRoot({ envFilePath: '.env' }),
+    MongooseModule.forRoot('mongodb://root:dbadmin@unigourmet_mongodb:27017', {
+      dbName: 'unigourmet_db',
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
