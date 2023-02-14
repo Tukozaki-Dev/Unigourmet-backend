@@ -30,12 +30,14 @@ git clone https://github.com/Tukozaki-Dev/Unigourmet-backend/
 
 To install the project's dependencies on your machine, just run the command (for this you need to have yarn installed on your machine):
 
-yarn install
 ```
+yarn install
+
 After completing the previous step, run the following command to run the application.
+
 ```
 docker-compose up -d --build
-```
+
 The command above will build the images and upload the application's containers.<br>
 After the correct build, the application will be running at the address [http://localhost:4000](http://localhost:4000/)
 
