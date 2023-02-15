@@ -10,7 +10,6 @@ import {
   HttpStatus,
   HttpException,
 } from '@nestjs/common';
-import { response } from 'express';
 import { ClassGroupService } from './class-group.service';
 import { CreateClassGroupDto } from './dto/create-class-group.dto';
 import { UpdateClassGroupDto } from './dto/update-class-group.dto';
@@ -32,25 +31,45 @@ export class ClassGroupController {
   }
 
   @Get()
-  findAll() {
-    return this.classGroupService.findAll();
+  async findAll() {
+    try {
+      const allClassGroups = await this.classGroupService.findAll();
+      return allClassGroups;
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.BAD_REQUEST, err);
+    }
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.classGroupService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    try {
+      const getClassGroup = await this.classGroupService.findOne(id);
+      return getClassGroup;
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.BAD_REQUEST, err);
+    }
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateClassGroupDto: UpdateClassGroupDto,
   ) {
-    return this.classGroupService.update(+id, updateClassGroupDto);
+    try {
+      const updateClassGroup = await this.classGroupService.update(id, updateClassGroupDto);
+      return updateClassGroup;
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.BAD_REQUEST, err);
+    }
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.classGroupService.remove(+id);
+  async remove(@Param('id') id: string) {
+    try {
+      const deleteClassGroup = await this.classGroupService.remove(id);
+      return deleteClassGroup;
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.BAD_REQUEST, err);
+    }
   }
 }

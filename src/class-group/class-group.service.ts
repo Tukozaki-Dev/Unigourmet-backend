@@ -11,22 +11,29 @@ export class ClassGroupService {
     const createdClassGroup = await this.classGroupRepository.create(
       createClassGroupDto,
     );
-    return await createdClassGroup;
+    return createdClassGroup;
   }
 
-  findAll() {
-    return `This action returns all classGroup`;
+  async findAll() {
+    const allClassGroups = await this.classGroupRepository.findAll();
+    return allClassGroups;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} classGroup`;
+  async findOne(id: string) {
+    const getClassGroup = await this.classGroupRepository.findOne(id);
+    return getClassGroup;
   }
 
-  update(id: number, updateClassGroupDto: UpdateClassGroupDto) {
-    return `This action updates a #${id} classGroup`;
+  async update(id: string, updateClassGroupDto: UpdateClassGroupDto) {
+    const updatedClassGroup = await this.classGroupRepository.update(
+      id,
+      updateClassGroupDto,
+    );
+    return updatedClassGroup;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} classGroup`;
+  async remove(id: string) {
+    const deleteClassGroup = await this.classGroupRepository.remove(id);
+    return deleteClassGroup;
   }
 }
