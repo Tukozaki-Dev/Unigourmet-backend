@@ -1,3 +1,4 @@
+import { UpdateNoteDto } from './dto/update-note.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateNoteDto } from './dto/create-note.dto';
@@ -19,4 +20,17 @@ export class NoteRepository {
     return await noteData;
   }
 
+  async findOne(id: string) {
+    const existingNote = this.noteModel.findById(id).exec();
+    return await existingNote;
+  }
+
+  async findByIdAndUpdate(id: string, updateNoteDto: UpdateNoteDto) {
+    await this.noteModel.findOneAndUpdate(
+      { _id: id },
+      updateNoteDto,
+    );
+    return this.findOne(id);
+  }
+  
 }

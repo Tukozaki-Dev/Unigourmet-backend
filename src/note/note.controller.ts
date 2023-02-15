@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, HttpStatus, HttpException } from '@nestjs/common';
 import { NoteService } from './note.service';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
@@ -34,29 +34,49 @@ export class NoteController {
           message: 'Todas as notas foram encontradas com sucesso', 
           noteData,
         });
-      }else {
-        return response.status(204).json({
-          message: `Nenhuma nota encontrada!`, data:null,
-        });
       }
-      
-    }catch (err) {
-      return response.status(err.status).json(err.response);
+    }catch(err){
+      throw new HttpException(err.message, err.status);
     }
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.noteService.findOne(+id);
+  async findOne(@Res() response, @Param('id') id: string) {
+    try {
+      const existingNote = await this.noteService.findOne(id);
+      
+      if(!!existingNote){
+        return response.status(HttpStatus.OK).json({
+          message: 'Nota encontrado com sucesso', 
+          existingNote,
+        });
+      }else{
+        return response.status(204).json({
+          message: `Nota com id #${id} não encontrada`, data:null,
+        });
+      }
+      
+    }catch(err){
+      throw new HttpException(err.message, err.status);
+    }
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateNoteDto: UpdateNoteDto) {
-    return this.noteService.update(+id, updateNoteDto);
+  update(@Res() response, @Param('id') id: string, @Body() updateNoteDto: UpdateNoteDto) {
+    try {
+      const existingNote = this.noteService.update(id, updateNoteDto);
+      if(!!existingNote){
+        return response.status(HttpStatus.OK).json({
+          message: 'Nota foi atualizada com sucesso', 
+          existingNote,
+        });
+      }
+    }catch(err){
+      throw new HttpException(err.message, err.status);
+    }
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.noteService.remove(+id);
   }
 }
