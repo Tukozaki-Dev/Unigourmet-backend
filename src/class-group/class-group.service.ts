@@ -1,11 +1,17 @@
 import { Injectable } from '@nestjs/common';
+import { ClassGroupRepository } from './class-group.repository';
 import { CreateClassGroupDto } from './dto/create-class-group.dto';
 import { UpdateClassGroupDto } from './dto/update-class-group.dto';
 
 @Injectable()
 export class ClassGroupService {
-  create(createClassGroupDto: CreateClassGroupDto) {
-    return 'This action adds a new classGroup';
+  constructor(private readonly classGroupRepository: ClassGroupRepository) {}
+
+  async create(createClassGroupDto: CreateClassGroupDto) {
+    const createdClassGroup = await this.classGroupRepository.create(
+      createClassGroupDto,
+    );
+    return await createdClassGroup;
   }
 
   findAll() {
