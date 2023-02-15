@@ -32,5 +32,9 @@ export class NoteRepository {
     );
     return this.findOne(id);
   }
+
+  async remove(id: string) {
+    return await this.noteModel.findByIdAndDelete(id);
+  }
   
 }

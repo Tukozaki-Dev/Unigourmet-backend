@@ -77,6 +77,23 @@ export class NoteController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  async remove(@Res() response, @Param('id') id: string) {
+    try{
+      const deletedNote = this.noteService.remove(id);
+
+      if(!!deletedNote){
+        return response.status(HttpStatus.OK).json({
+          message:'Nota deletada com sucesso', deletedNote,
+        });
+      }else {
+        return response.status(204).json({
+          message: `Nota com id #${id} não encontrada`, data:null,
+        });
+      }
+      
+    }catch (err) {
+      throw new HttpException(err.message, err.status);
+    }
+    
   }
 }

@@ -65,7 +65,24 @@ export class NoteService {
   }
 
 
-  remove(id: number) {
-    return `This action removes a #${id} note`;
+  async remove(id: string) {
+    if(!isValidObjectId(id)){
+
+      throw new HttpException('ID não é um ObjectId Válido para o Mongoose',HttpStatus.BAD_REQUEST);
+    }
+
+    try {
+      const deletedQNote = await this.noteRepository.remove(id);
+      if(!deletedQNote) {
+
+      throw new HttpException(`Nota com id #${id} não encontrada`, 204);
+      }
+
+      return deletedQNote;
+    }catch(err){
+
+      throw new HttpException(err.message, err.status);
+    }
+    
   }
 }
