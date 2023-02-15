@@ -1,5 +1,5 @@
 import { Prop, raw, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { NestedProperty } from '../interface/nested-property.interface';
+import { NestedProperty } from 'src/common/interfaces/nested-property.interface';
 
 export type ClassGroupDocument = ClassGroup & Document;
 

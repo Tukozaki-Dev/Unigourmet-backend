@@ -1,27 +1,33 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { NestedProperty } from './../../common/interfaces/nested-property.interface';
+import { Prop, raw, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-export type NoteDocument = Note & Document; 
+export type NoteDocument = Note & Document;
 
-@Schema()
+@Schema({ timestamps: true })
 export class Note {
-    @Prop()
-    id: string;
 
-    @Prop()
-    createdAt: string;
+  @Prop(
+    raw({
+      _id: { type: String, required: true },
+      name: { type: String, required: true },
+    }),
+  )
+  course: NestedProperty;
 
-    @Prop()
-    subject: string;
+  @Prop({ required: true })
+  region: string;
 
-    @Prop()
-    region: string;
+  @Prop(
+    raw({
+      _id: { type: String, required: true },
+      name: { type: String, required: true },
+    }),
+  )
+  professor: NestedProperty;
 
-    @Prop()
-    professor: string;
-
-    @Prop()
-    note: string;
+  @Prop({ required: true })
+  note: string;
 }
 
 export const NoteSchema = SchemaFactory.createForClass(Note);
