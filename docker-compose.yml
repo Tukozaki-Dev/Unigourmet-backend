@@ -35,8 +35,6 @@ services:
       - type: bind
         source: ${PUBLIC_FOLDER}
         target: /home/node/api/public
-        volume:
-          nocopy: true
       - /etc/localtime:/etc/localtime:ro
     working_dir: /home/node/api
     networks: 
