@@ -1,21 +1,36 @@
-import { IsString, IsDateString } from "class-validator";
+import { Type } from "class-transformer";
+import { IsString, IsObject, ValidateNested } from "class-validator";
+
+export class Course {
+    @IsString()
+    _id: string;
+  
+    @IsString()
+    name: string;
+}
+
+  export class Professor {
+    @IsString()
+    _id: string;
+  
+    @IsString()
+    name: string;
+}
 
 export class CreateNoteDto {
-
-    @IsString()
-    id: string;
-
-    @IsString()
-    createdAt: string;
     
-    @IsString()
-    subject: string;
+    @IsObject()
+    @ValidateNested()
+    @Type(() => Course)
+    course: Course;
 
     @IsString()
     region: string;
 
-    @IsString()
-    professor: string;
+    @IsObject()
+    @ValidateNested()
+    @Type(() => Professor)
+    professor: Professor;
 
     @IsString()
     note: string;
