@@ -26,8 +26,23 @@ export class NoteController {
   }
 
   @Get()
-  findAll() {
-    return this.noteService.findAll();
+  async findAll(@Res() response) {
+    try {
+      const noteData = await this.noteService.findAll();
+      if(!!noteData){
+        return response.status(HttpStatus.OK).json({
+          message: 'Todas as notas foram encontradas com sucesso', 
+          noteData,
+        });
+      }else {
+        return response.status(204).json({
+          message: `Nenhuma nota encontrada!`, data:null,
+        });
+      }
+      
+    }catch (err) {
+      return response.status(err.status).json(err.response);
+    }
   }
 
   @Get(':id')

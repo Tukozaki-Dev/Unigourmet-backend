@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
 import { NoteRepository } from './note.repository';
@@ -12,8 +12,15 @@ export class NoteService {
     return createdNote;
   }
 
-  findAll() {
-    return `This action returns all note`;
+  async findAll() {
+    const noteData = await this.noteRepository.findAll();
+
+    if(!noteData || noteData.length === 0) {
+
+      throw new HttpException(`Nenhum orçamento encontrado!`, 204);
+    }
+
+    return noteData;
   }
 
   findOne(id: number) {
