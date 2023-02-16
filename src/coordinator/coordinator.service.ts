@@ -1,26 +1,82 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { isValidObjectId } from 'mongoose';
+import { CoordinatorRepository } from './coordinator.repository';
 import { CreateCoordinatorDto } from './dto/create-coordinator.dto';
 import { UpdateCoordinatorDto } from './dto/update-coordinator.dto';
 
 @Injectable()
 export class CoordinatorService {
-  create(createCoordinatorDto: CreateCoordinatorDto) {
-    return 'This action adds a new coordinator';
+  constructor(private readonly coordinatorRepository: CoordinatorRepository) {}
+
+  async create(createCoordinatorDto: CreateCoordinatorDto) {
+    const createdCoordinator = await this.coordinatorRepository.create(
+      createCoordinatorDto,
+    );
+    return createdCoordinator;
   }
 
-  findAll() {
-    return `This action returns all coordinator`;
+  async findAll() {
+    const coordinatorData = await this.coordinatorRepository.findAll();
+
+    if (!coordinatorData || coordinatorData.length === 0) {
+      throw new HttpException(`Nenhum coordenador encontrado!`, 204);
+    }
+    return coordinatorData;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} coordinator`;
+  async findOne(id: string) {
+    if (!isValidObjectId(id)) {
+      throw new HttpException('ID inválido', HttpStatus.BAD_REQUEST);
+    }
+    try {
+      const singleCoordinatorData = await this.coordinatorRepository.findOne(
+        id,
+      );
+
+      if (!singleCoordinatorData) {
+        throw new HttpException(`Coordenador ${id} não encontrado`, 204);
+      }
+
+      return singleCoordinatorData;
+    } catch (err) {
+      throw new HttpException(err.message, err.status);
+    }
   }
 
-  update(id: number, updateCoordinatorDto: UpdateCoordinatorDto) {
-    return `This action updates a #${id} coordinator`;
+  async update(id: string, updateCoordinatorDto: UpdateCoordinatorDto) {
+    if (!isValidObjectId(id)) {
+      throw new HttpException('ID inválido', HttpStatus.BAD_REQUEST);
+    }
+    try {
+      const singleCoordinatorData = await this.coordinatorRepository.update(
+        id,
+        updateCoordinatorDto,
+      );
+
+      if (!singleCoordinatorData) {
+        throw new HttpException(`Coordenador ${id} não encontrado`, 204);
+      }
+
+      return singleCoordinatorData;
+    } catch (err) {
+      throw new HttpException(err.message, err.status);
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} coordinator`;
+  async remove(id: string) {
+    if (!isValidObjectId(id)) {
+      throw new HttpException('ID inválido', HttpStatus.BAD_REQUEST);
+    }
+    try {
+      const deletedCoordinator = await this.coordinatorRepository.remove(id);
+
+      if (!deletedCoordinator) {
+        throw new HttpException(`Coordenador ${id} não encontrado`, 204);
+      }
+
+      return deletedCoordinator;
+    } catch (err) {
+      throw new HttpException(err.message, err.status);
+    }
   }
 }

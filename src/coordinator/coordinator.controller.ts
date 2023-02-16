@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { CoordinatorService } from './coordinator.service';
 import { CreateCoordinatorDto } from './dto/create-coordinator.dto';
 import { UpdateCoordinatorDto } from './dto/update-coordinator.dto';
@@ -8,27 +18,60 @@ export class CoordinatorController {
   constructor(private readonly coordinatorService: CoordinatorService) {}
 
   @Post()
-  create(@Body() createCoordinatorDto: CreateCoordinatorDto) {
-    return this.coordinatorService.create(createCoordinatorDto);
+  async create(@Body() createCoordinatorDto: CreateCoordinatorDto) {
+    try {
+      const createdCoordinator = await this.coordinatorService.create(
+        createCoordinatorDto,
+      );
+      return createdCoordinator;
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.BAD_REQUEST, err);
+    }
   }
 
   @Get()
-  findAll() {
-    return this.coordinatorService.findAll();
+  async findAll() {
+    try {
+      const coordinatorsData = await this.coordinatorService.findAll();
+      return coordinatorsData;
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.BAD_REQUEST, err);
+    }
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.coordinatorService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    try {
+      const singleCoordinatorData = await this.coordinatorService.findOne(id);
+      return singleCoordinatorData;
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.BAD_REQUEST, err);
+    }
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCoordinatorDto: UpdateCoordinatorDto) {
-    return this.coordinatorService.update(+id, updateCoordinatorDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateCoordinatorDto: UpdateCoordinatorDto,
+  ) {
+    try {
+      const singleCoordinatorData = await this.coordinatorService.update(
+        id,
+        updateCoordinatorDto,
+      );
+      return singleCoordinatorData;
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.BAD_REQUEST, err);
+    }
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.coordinatorService.remove(+id);
+  async remove(@Param('id') id: string) {
+    try {
+      const deletedCoordinator = await this.coordinatorService.remove(id);
+      return deletedCoordinator;
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.BAD_REQUEST, err);
+    }
   }
 }
