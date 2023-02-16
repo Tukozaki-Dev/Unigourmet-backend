@@ -13,8 +13,8 @@ export class NoteService {
     return createdNote;
   }
 
-  async findAll() {
-    const noteData = await this.noteRepository.findAll();
+  async findAll(page: number) {
+    const noteData = await this.noteRepository.findAll(page);
     return noteData;
   }
 

@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, HttpStatus, HttpException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, HttpStatus, HttpException, Query } from '@nestjs/common';
 import { NoteService } from './note.service';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
+import { PaginationParams } from 'src/common/utils/paginationParams';
 
 @Controller('note')
 export class NoteController {
@@ -19,9 +20,9 @@ export class NoteController {
   }
 
   @Get()
-  async findAll() {
+  async findAll(@Query() paginationParams: PaginationParams) {
     try {
-      const noteData = await this.noteService.findAll();
+      const noteData = await this.noteService.findAll(paginationParams.page);
       return noteData;
     }catch(err){
       throw new HttpException(err.message, err.status);
