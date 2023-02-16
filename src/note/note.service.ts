@@ -1,39 +1,88 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { isValidObjectId } from 'mongoose';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
-import { Note, NoteDocument } from './schemas/note.schema';
+import { NoteRepository } from './note.repository';
 
 @Injectable()
 export class NoteService {
-  constructor(@InjectModel(Note.name) private noteModel: Model<NoteDocument>) {
-  /* Primeiro de tudo, o NestJS está recebendo um Model do Mongoose. 
-  aqui ele pede pra vc especificar qual collection do mongoDB ´pertence o Model. 
-  nesse caso o Model<NoteDocument> significa q é um Model das notas */
-  }
+  constructor(private readonly noteRepository: NoteRepository) {}
   
   async create(createNoteDto: CreateNoteDto) {
-    /** o DTO é onde a gente faz a tipagem do objeto que vamos receber do frontend. 
-    DTO é data transfer object. Vamos receber do front e depois jogar pra dentro do mongo 
-    usando o productModel que criamos lá em cima com a ajuda do Mongoose */
-    const createdNote = new this.noteModel(createNoteDto); //isso é o mongoose em ação
-    return await createdNote.save();//outra função do mongoose pra salvar no BD o novo produto
+    const createdNote = await this.noteRepository.create(createNoteDto);
+    return createdNote;
   }
 
-  findAll() {
-    return `This action returns all note`;
+  async findAll() {
+    const noteData = await this.noteRepository.findAll();
+
+    if(!noteData || noteData.length === 0) {
+
+      throw new HttpException(`Nenhuma nota encontrada!`, 204);
+    }
+
+    return noteData;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} note`;
+  async findOne(id: string) {
+    if(!isValidObjectId(id)){
+
+      throw new HttpException('ID não é um ObjectId Válido para o Mongoose', HttpStatus.BAD_REQUEST);
+    }
+    
+    try{
+      const existingNote = await this.noteRepository.findOne(id);
+      if(!existingNote) {
+
+        throw new HttpException(`Nota com #${id} não encontrada`, 204);
+      }
+
+      return existingNote;
+    }catch(err){
+
+      throw new HttpException(err.message, err.status);
+    }
+    
   }
 
-  update(id: number, updateNoteDto: UpdateNoteDto) {
-    return `This action updates a #${id} note`;
+  async update(id: string, updateNoteDto: UpdateNoteDto) {
+    if(!isValidObjectId(id)){
+
+      throw new HttpException('ID não é um ObjectId Válido para o Mongoose',HttpStatus.BAD_REQUEST);
+    }
+
+    try {
+      const existingNote = await this.noteRepository.findByIdAndUpdate(id, updateNoteDto);
+      if(!existingNote) {
+        throw new HttpException(`Nota com id #${id} não encontrada`, 204);
+      }
+
+      return existingNote;
+    }catch(err){
+
+      throw new HttpException(err.message, err.status);
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} note`;
+
+  async remove(id: string) {
+    if(!isValidObjectId(id)){
+
+      throw new HttpException('ID não é um ObjectId Válido para o Mongoose',HttpStatus.BAD_REQUEST);
+    }
+
+    try {
+      const deletedQNote = await this.noteRepository.remove(id);
+      if(!deletedQNote) {
+
+      throw new HttpException(`Nota com id #${id} não encontrada`, 204);
+      }
+
+      return deletedQNote;
+    }catch(err){
+
+      throw new HttpException(err.message, err.status);
+    }
+    
   }
 }
