@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { isValidObjectId } from 'mongoose';
 import { ClassGroupRepository } from './class-group.repository';
 import { CreateClassGroupDto } from './dto/create-class-group.dto';
 import { UpdateClassGroupDto } from './dto/update-class-group.dto';
@@ -15,25 +16,65 @@ export class ClassGroupService {
   }
 
   async findAll() {
-    const allClassGroups = await this.classGroupRepository.findAll();
-    return allClassGroups;
+    const classGroupsData = await this.classGroupRepository.findAll();
+
+    if (!classGroupsData || classGroupsData.length === 0) {
+      throw new HttpException(`Nenhuma turma encontrada!`, 204);
+    }
+    return classGroupsData;
   }
 
   async findOne(id: string) {
-    const getClassGroup = await this.classGroupRepository.findOne(id);
-    return getClassGroup;
+    if (!isValidObjectId(id)) {
+      throw new HttpException('ID inválido', HttpStatus.BAD_REQUEST);
+    }
+    try {
+      const singleClassGroupData = await this.classGroupRepository.findOne(id);
+
+      if (!singleClassGroupData) {
+        throw new HttpException(`Turma ${id} não encontrada`, 204);
+      }
+
+      return singleClassGroupData;
+    } catch (err) {
+      throw new HttpException(err.message, err.status);
+    }
   }
 
   async update(id: string, updateClassGroupDto: UpdateClassGroupDto) {
-    const updatedClassGroup = await this.classGroupRepository.update(
-      id,
-      updateClassGroupDto,
-    );
-    return updatedClassGroup;
+    if (!isValidObjectId(id)) {
+      throw new HttpException('ID inválido', HttpStatus.BAD_REQUEST);
+    }
+    try {
+      const singleClassGroupData = await this.classGroupRepository.update(
+        id,
+        updateClassGroupDto,
+      );
+
+      if (!singleClassGroupData) {
+        throw new HttpException(`Turma ${id} não encontrada`, 204);
+      }
+
+      return singleClassGroupData;
+    } catch (err) {
+      throw new HttpException(err.message, err.status);
+    }
   }
 
   async remove(id: string) {
-    const deleteClassGroup = await this.classGroupRepository.remove(id);
-    return deleteClassGroup;
+    if (!isValidObjectId(id)) {
+      throw new HttpException('ID inválido', HttpStatus.BAD_REQUEST);
+    }
+    try {
+      const deletedClassGroup = await this.classGroupRepository.remove(id);
+
+      if (!deletedClassGroup) {
+        throw new HttpException(`Turma ${id} não encontrada`, 204);
+      }
+
+      return deletedClassGroup;
+    } catch (err) {
+      throw new HttpException(err.message, err.status);
+    }
   }
 }

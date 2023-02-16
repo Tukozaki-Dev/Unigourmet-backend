@@ -33,8 +33,8 @@ export class ClassGroupController {
   @Get()
   async findAll() {
     try {
-      const allClassGroups = await this.classGroupService.findAll();
-      return allClassGroups;
+      const classGroupsData = await this.classGroupService.findAll();
+      return classGroupsData;
     } catch (err) {
       throw new HttpException(err, HttpStatus.BAD_REQUEST, err);
     }
@@ -43,8 +43,8 @@ export class ClassGroupController {
   @Get(':id')
   async findOne(@Param('id') id: string) {
     try {
-      const getClassGroup = await this.classGroupService.findOne(id);
-      return getClassGroup;
+      const singleClassGroupData = await this.classGroupService.findOne(id);
+      return singleClassGroupData;
     } catch (err) {
       throw new HttpException(err, HttpStatus.BAD_REQUEST, err);
     }
@@ -56,8 +56,8 @@ export class ClassGroupController {
     @Body() updateClassGroupDto: UpdateClassGroupDto,
   ) {
     try {
-      const updateClassGroup = await this.classGroupService.update(id, updateClassGroupDto);
-      return updateClassGroup;
+      const singleClassGroupData = await this.classGroupService.update(id, updateClassGroupDto);
+      return singleClassGroupData;
     } catch (err) {
       throw new HttpException(err, HttpStatus.BAD_REQUEST, err);
     }
@@ -66,8 +66,8 @@ export class ClassGroupController {
   @Delete(':id')
   async remove(@Param('id') id: string) {
     try {
-      const deleteClassGroup = await this.classGroupService.remove(id);
-      return deleteClassGroup;
+      const deletedClassGroup = await this.classGroupService.remove(id);
+      return deletedClassGroup;
     } catch (err) {
       throw new HttpException(err, HttpStatus.BAD_REQUEST, err);
     }
