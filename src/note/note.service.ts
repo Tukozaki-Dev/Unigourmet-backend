@@ -13,8 +13,8 @@ export class NoteService {
     return createdNote;
   }
 
-  async findAll(page: number) {
-    const noteData = await this.noteRepository.findAll(page);
+  async findAll(documentsToSkip = 0, limitOfDocuments?: number) {
+    const noteData = await this.noteRepository.findAll(documentsToSkip, limitOfDocuments);
     return noteData;
   }
 

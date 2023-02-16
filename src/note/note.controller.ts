@@ -20,9 +20,9 @@ export class NoteController {
   }
 
   @Get()
-  async findAll(@Query() paginationParams: PaginationParams) {
+  async findAll(@Query() { skip, limit }: PaginationParams) {
     try {
-      const noteData = await this.noteService.findAll(paginationParams.page);
+      const noteData = await this.noteService.findAll(skip, limit);
       return noteData;
     }catch(err){
       throw new HttpException(err.message, err.status);
