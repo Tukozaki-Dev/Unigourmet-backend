@@ -9,7 +9,9 @@ import {
   Delete,
   HttpStatus,
   HttpException,
+  Query,
 } from '@nestjs/common';
+import { PaginationParams } from 'src/common/utils/paginationParams';
 import { ClassGroupService } from './class-group.service';
 import { CreateClassGroupDto } from './dto/create-class-group.dto';
 import { UpdateClassGroupDto } from './dto/update-class-group.dto';
@@ -31,9 +33,12 @@ export class ClassGroupController {
   }
 
   @Get()
-  async findAll() {
+  async findAll(@Query() { skip, limit }: PaginationParams) {
     try {
-      const classGroupsData = await this.classGroupService.findAll();
+      const classGroupsData = await this.classGroupService.findAll(
+        skip,
+        limit,
+      );
       return classGroupsData;
     } catch (err) {
       throw new HttpException(err, HttpStatus.BAD_REQUEST, err);

@@ -14,8 +14,19 @@ export class ClassGroupRepository {
     return await createdClassGroup.save();
   }
 
-  async findAll() {
-    return await this.classGroupModel.find({});
+  async findAll(documentsToSkip = 0, limitOfDocuments?: number) {
+    const findQuery = this.classGroupModel
+      .find()
+      .sort({ _id: 1 })
+      .skip(documentsToSkip);
+
+    if (limitOfDocuments) {
+      findQuery.limit(limitOfDocuments);
+    }
+    const results = await findQuery;
+    const count = await this.classGroupModel.count();
+
+    return { results, count };
   }
 
   async findOne(id: string) {
