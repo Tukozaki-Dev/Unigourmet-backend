@@ -1,26 +1,56 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { isValidObjectId } from 'mongoose';
 import { CreateProfessorDto } from './dto/create-professor.dto';
 import { UpdateProfessorDto } from './dto/update-professor.dto';
+import { ProfessorRepository } from './professor.repository';
 
 @Injectable()
 export class ProfessorService {
-  create(createProfessorDto: CreateProfessorDto) {
-    return 'This action adds a new professor';
+  constructor(private readonly professorRepository: ProfessorRepository) {}
+
+  async create(createProfessorDto: CreateProfessorDto) {
+    const createdProfessor = await this.professorRepository.create(createProfessorDto);
+    return createdProfessor;
   }
 
-  findAll() {
-    return `This action returns all professor`;
+  async findAll(documentsToSkip = 0, limitOfDocuments?: number) {
+    const professorData = await this.professorRepository.findAll(documentsToSkip, limitOfDocuments);
+    return professorData;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} professor`;
+  async findOne(id: string) {
+    if(!isValidObjectId(id)){
+      throw new HttpException('ID não é um ObjectId Válido para o Mongoose', HttpStatus.BAD_REQUEST);
+    }
+    try{
+      const singleProfessorData = await this.professorRepository.findOne(id);
+      return singleProfessorData;
+    }catch(err){
+      throw new HttpException(err.message, err.status);
+    }
   }
 
-  update(id: number, updateProfessorDto: UpdateProfessorDto) {
-    return `This action updates a #${id} professor`;
+  async update(id: string, updateProfessorDto: UpdateProfessorDto) {
+    if(!isValidObjectId(id)){
+      throw new HttpException('ID não é um ObjectId Válido para o Mongoose',HttpStatus.BAD_REQUEST);
+    }
+    try {
+      const singleProfessorData = await this.professorRepository.findByIdAndUpdate(id, updateProfessorDto);
+      return singleProfessorData;
+    }catch(err){
+      throw new HttpException(err.message, err.status);
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} professor`;
+  async remove(id: string) {
+    if(!isValidObjectId(id)){
+      throw new HttpException('ID não é um ObjectId Válido para o Mongoose',HttpStatus.BAD_REQUEST);
+    }
+    try {
+      const deletedProfessor = await this.professorRepository.remove(id);
+      return deletedProfessor;
+    }catch(err){
+      throw new HttpException(err.message, err.status);
+    }
   }
 }

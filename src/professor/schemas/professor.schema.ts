@@ -23,8 +23,13 @@ export class Professor {
   @Prop({ required: true })
   imagePath: string;
 
-  @Prop({ required: true })
-  specialties: string[];
+  @Prop([
+    raw({
+      _id: { type: String, required: true },
+      name: { type: String, required: true },
+    }),
+  ])
+  specialties: NestedProperty[];
 
   @Prop([
     raw({

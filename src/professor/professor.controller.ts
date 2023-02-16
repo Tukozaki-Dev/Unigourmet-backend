@@ -1,34 +1,61 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, Query } from '@nestjs/common';
 import { ProfessorService } from './professor.service';
 import { CreateProfessorDto } from './dto/create-professor.dto';
 import { UpdateProfessorDto } from './dto/update-professor.dto';
+import { PaginationParams } from 'src/common/utils/paginationParams';
 
 @Controller('professor')
 export class ProfessorController {
   constructor(private readonly professorService: ProfessorService) {}
 
   @Post()
-  create(@Body() createProfessorDto: CreateProfessorDto) {
-    return this.professorService.create(createProfessorDto);
+  async create(@Body() createProfessorDto: CreateProfessorDto) {
+    try {
+      const createdProfessor = await this.professorService.create(createProfessorDto);
+
+      return createdProfessor;
+    }catch(err) {
+      throw new HttpException(err.message, err.status);
+    }
   }
 
   @Get()
-  findAll() {
-    return this.professorService.findAll();
+  async findAll(@Query() { skip, limit }: PaginationParams) {
+    try {
+      const professorData = await this.professorService.findAll(skip, limit);
+      return professorData;
+    }catch(err){
+      throw new HttpException(err.message, err.status);
+    }
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.professorService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    try {
+      const singleProfessorData = await this.professorService.findOne(id);
+      return singleProfessorData;
+    }catch(err){
+      throw new HttpException(err.message, err.status);
+    }
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateProfessorDto: UpdateProfessorDto) {
-    return this.professorService.update(+id, updateProfessorDto);
+    try {
+      const singleProfessorData = this.professorService.update(id, updateProfessorDto);
+      return singleProfessorData;
+    }catch(err){
+      throw new HttpException(err.message, err.status);
+    }
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.professorService.remove(+id);
+  async remove(@Param('id') id: string) {
+    try{
+      const deletedProfessor = this.professorService.remove(id);
+        return deletedProfessor;
+    }catch (err) {
+      throw new HttpException(err.message, err.status);
+    }
   }
 }

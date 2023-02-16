@@ -47,8 +47,8 @@ export class NoteService {
       throw new HttpException('ID não é um ObjectId Válido para o Mongoose',HttpStatus.BAD_REQUEST);
     }
     try {
-      const deletedQNote = await this.noteRepository.remove(id);
-      return deletedQNote;
+      const deletedNote = await this.noteRepository.remove(id);
+      return deletedNote;
     }catch(err){
       throw new HttpException(err.message, err.status);
     }

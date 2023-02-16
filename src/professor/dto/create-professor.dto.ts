@@ -3,7 +3,6 @@ import { IsString, ValidateNested, IsMongoId, Matches, IsEmail, IsPhoneNumber, I
 
 export class CourseListing {
     @IsMongoId()
-    @IsString()
     _id: string;
   
     @IsString()
@@ -11,9 +10,8 @@ export class CourseListing {
     name: string;
 }
 
-  export class ClassGroups {
+export class ClassGroups {
     @IsMongoId()
-    @IsString()
     _id: string;
   
     @IsString()
@@ -21,7 +19,16 @@ export class CourseListing {
     name: string;
 }
 
-export class CreateNoteDto {
+export class Specialties {
+    @IsMongoId()
+    _id: string;
+  
+    @IsString()
+    @Matches(/^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/)
+    name: string;
+}
+
+export class CreateProfessorDto {
     @IsString()
     @Matches(/^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/)
     name: string;
@@ -38,8 +45,7 @@ export class CreateNoteDto {
     password: string;
 
     @IsString()
-    @IsPhoneNumber()
-    phone: string;
+    phone: number;
 
     @IsString()
     imagePath: string;
@@ -48,8 +54,8 @@ export class CreateNoteDto {
     @ValidateNested({
         each: true,
     })
-    @Type(() => String)
-    specialties:String[];
+    @Type(() => Specialties)
+    specialties:Specialties[];
 
     @IsArray()
     @ValidateNested({
