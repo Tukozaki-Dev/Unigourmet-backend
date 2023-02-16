@@ -7,7 +7,7 @@ export class Course {
     _id: string;
   
     @IsString()
-    @Matches(/^[A-Za-z]+$/)
+    @Matches(/^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/)
     name: string;
 }
 
@@ -17,7 +17,7 @@ export class Course {
     _id: string;
   
     @IsString()
-    @Matches(/^[A-Za-z]+$/)
+    @Matches(/^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/)
     name: string;
 }
 
