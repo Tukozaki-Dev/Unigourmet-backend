@@ -15,8 +15,11 @@ export class CoordinatorService {
     return createdCoordinator;
   }
 
-  async findAll(page: number) {
-    const coordinatorData = await this.coordinatorRepository.findAll(page);
+  async findAll(documentsToSkip = 0, limitOfDocuments?: number) {
+    const coordinatorData = await this.coordinatorRepository.findAll(
+      documentsToSkip,
+      limitOfDocuments,
+    );
     return coordinatorData;
   }
 

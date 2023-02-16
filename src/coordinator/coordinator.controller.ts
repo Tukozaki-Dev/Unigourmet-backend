@@ -32,10 +32,11 @@ export class CoordinatorController {
   }
 
   @Get()
-  async findAll(@Query() paginationParams: PaginationParams) {
+  async findAll(@Query() { skip, limit }: PaginationParams) {
     try {
       const coordinatorsData = await this.coordinatorService.findAll(
-        paginationParams.page,
+        skip,
+        limit,
       );
       return coordinatorsData;
     } catch (err) {

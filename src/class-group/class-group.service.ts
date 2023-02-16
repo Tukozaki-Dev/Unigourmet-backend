@@ -15,12 +15,11 @@ export class ClassGroupService {
     return createdClassGroup;
   }
 
-  async findAll() {
-    const classGroupsData = await this.classGroupRepository.findAll();
-
-    if (!classGroupsData || classGroupsData.length === 0) {
-      throw new HttpException(`Nenhuma turma encontrada!`, 204);
-    }
+  async findAll(documentsToSkip = 0, limitOfDocuments?: number) {
+    const classGroupsData = await this.classGroupRepository.findAll(
+      documentsToSkip,
+      limitOfDocuments,
+    );
     return classGroupsData;
   }
 

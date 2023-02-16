@@ -14,24 +14,19 @@ export class CoordinatorRepository {
     return await createdCoordinator.save();
   }
 
-  async findAll(page: number) {
-    let result;
+  async findAll(documentsToSkip = 0, limitOfDocuments?: number) {
+    const findQuery = this.coordinatorModel
+      .find()
+      .sort({ _id: 1 })
+      .skip(documentsToSkip);
 
-    if (page <= 1) {
-      result = await this.coordinatorModel.find().skip(0).limit(16).exec();
-    } else {
-      const x = page * 16 - 16;
-      result = await this.coordinatorModel.find().skip(x).limit(16).exec();
+    if (limitOfDocuments) {
+      findQuery.limit(limitOfDocuments);
     }
+    const results = await findQuery;
+    const count = await this.coordinatorModel.count();
 
-    const totalNotes = await this.coordinatorModel.countDocuments({});
-    const pagesQuantity = Math.ceil(totalNotes / 16);
-
-    return {
-      notes: result,
-      pagesQuantity: pagesQuantity,
-      totalNotes: totalNotes,
-    };
+    return { results, count };
   }
 
   async findOne(id: string) {
