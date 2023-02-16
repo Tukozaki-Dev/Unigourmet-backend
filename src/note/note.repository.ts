@@ -28,8 +28,6 @@ export class NoteRepository {
   const count = await this.noteModel.count();
  
   return { results, count };
-    // const noteData = this.noteModel.find().exec();
-    // return await noteData;
   }
 
   async findOne(id: string) {
