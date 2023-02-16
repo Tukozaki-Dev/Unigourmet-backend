@@ -15,9 +15,27 @@ export class NoteRepository {
     return await createdNote.save();
   }
 
-  async findAll() {
-    const noteData = this.noteModel.find().exec();
-    return await noteData;
+  async findAll(page: number) {
+    let result;
+    
+    if (page <= 1){
+      result = await this.noteModel.find().skip(0).limit(16).exec();
+    }
+
+    else {
+      let x; 
+      x = page * 16 - 16;
+      result = await this.noteModel.find().skip(x).limit(16).exec();
+    }
+
+    let totalNotes = await this.noteModel.countDocuments({});
+    let pagesQuantity = Math.ceil(totalNotes / 16); 
+
+    return {
+      notes:result,
+      pagesQuantity: pagesQuantity,
+      totalNotes: totalNotes
+    }
   }
 
   async findOne(id: string) {
