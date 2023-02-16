@@ -3,12 +3,12 @@ import {
   IsNotEmpty,
   IsNumber,
   IsString,
-  Length,
   Matches,
+  Length,
 } from 'class-validator';
 
 export class CreateCoordinatorDto {
-  @Matches(/^[A-Za-z]+$/)
+  @Matches(/^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/)
   @IsNotEmpty()
   @IsString()
   name: string;
@@ -19,7 +19,6 @@ export class CreateCoordinatorDto {
   email: string;
 
   @IsNotEmpty()
-  @Length(10, 11)
   @IsNumber()
   phone: number;
 

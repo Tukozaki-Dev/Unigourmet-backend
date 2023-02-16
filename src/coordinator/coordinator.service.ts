@@ -15,12 +15,8 @@ export class CoordinatorService {
     return createdCoordinator;
   }
 
-  async findAll() {
-    const coordinatorData = await this.coordinatorRepository.findAll();
-
-    if (!coordinatorData || coordinatorData.length === 0) {
-      throw new HttpException(`Nenhum coordenador encontrado!`, 204);
-    }
+  async findAll(page: number) {
+    const coordinatorData = await this.coordinatorRepository.findAll(page);
     return coordinatorData;
   }
 

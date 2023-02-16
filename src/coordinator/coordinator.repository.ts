@@ -2,11 +2,11 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateCoordinatorDto } from './dto/create-coordinator.dto';
 import { UpdateCoordinatorDto } from './dto/update-coordinator.dto';
-import { CoordinatorDocument } from './schemas/coordinator.schema';
+import { Coordinator, CoordinatorDocument } from './schemas/coordinator.schema';
 
 export class CoordinatorRepository {
   constructor(
-    @InjectModel(CoordinatorRepository.name)
+    @InjectModel(Coordinator.name)
     private coordinatorModel: Model<CoordinatorDocument>,
   ) {}
   async create(createCoordinatorDto: CreateCoordinatorDto) {
@@ -14,8 +14,24 @@ export class CoordinatorRepository {
     return await createdCoordinator.save();
   }
 
-  async findAll() {
-    return await this.coordinatorModel.find({});
+  async findAll(page: number) {
+    let result;
+
+    if (page <= 1) {
+      result = await this.coordinatorModel.find().skip(0).limit(16).exec();
+    } else {
+      const x = page * 16 - 16;
+      result = await this.coordinatorModel.find().skip(x).limit(16).exec();
+    }
+
+    const totalNotes = await this.coordinatorModel.countDocuments({});
+    const pagesQuantity = Math.ceil(totalNotes / 16);
+
+    return {
+      notes: result,
+      pagesQuantity: pagesQuantity,
+      totalNotes: totalNotes,
+    };
   }
 
   async findOne(id: string) {

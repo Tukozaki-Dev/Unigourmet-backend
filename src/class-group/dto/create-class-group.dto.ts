@@ -11,7 +11,7 @@ export class Disciplines {
 
   @IsNotEmpty()
   @IsString()
-  @Matches(/^[A-Za-z]+$/)
+  @Matches(/^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/)
   name: string;
 }
 
@@ -23,7 +23,7 @@ export class Students {
 
   @IsNotEmpty()
   @IsString()
-  @Matches(/^[A-Za-z]+$/)
+  @Matches(/^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/)
   name: string;
 }
 
@@ -32,12 +32,12 @@ export class Students {
 export class CreateClassGroupDto {
   @IsNotEmpty()
   @IsString()
-  @Matches(/^[A-Za-z]+$/)
+  @Matches(/^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/)
   name: string;
 
   @IsNotEmpty()
   @IsString()
-  @Matches(/^[A-Za-z0-9]*$/)
+  @Matches(/^[\w'\-,.][^_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/)
   registerCode: string;
 
   @IsNotEmpty()
@@ -47,12 +47,12 @@ export class CreateClassGroupDto {
 
   @IsNotEmpty()
   @IsString()
-  @Matches(/^[A-Za-z]+$/)
+  @Matches(/^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/)
   shift: string;
 
   @IsNotEmpty()
   @IsString()
-  @Matches(/^[A-Za-z]+$/)
+  @Matches(/^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/)
   category: string;
 
   @IsArray()

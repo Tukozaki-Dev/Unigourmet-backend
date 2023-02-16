@@ -12,7 +12,7 @@ import { CreateCoordinatorDto } from './create-coordinator.dto';
 export class UpdateCoordinatorDto extends PartialType(CreateCoordinatorDto) {
   @IsOptional()
   @IsString()
-  @Matches(/^[A-Za-z]+$/)
+  @Matches(/^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/)
   name: string;
 
   @IsOptional()
@@ -21,7 +21,6 @@ export class UpdateCoordinatorDto extends PartialType(CreateCoordinatorDto) {
   email: string;
 
   @IsOptional()
-  @Length(10, 11)
   @IsNumber()
   phone: number;
 

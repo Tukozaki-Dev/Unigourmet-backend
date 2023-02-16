@@ -8,7 +8,9 @@ import {
   Delete,
   HttpException,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
+import { PaginationParams } from 'src/common/utils/paginationParams';
 import { CoordinatorService } from './coordinator.service';
 import { CreateCoordinatorDto } from './dto/create-coordinator.dto';
 import { UpdateCoordinatorDto } from './dto/update-coordinator.dto';
@@ -30,9 +32,11 @@ export class CoordinatorController {
   }
 
   @Get()
-  async findAll() {
+  async findAll(@Query() paginationParams: PaginationParams) {
     try {
-      const coordinatorsData = await this.coordinatorService.findAll();
+      const coordinatorsData = await this.coordinatorService.findAll(
+        paginationParams.page,
+      );
       return coordinatorsData;
     } catch (err) {
       throw new HttpException(err, HttpStatus.BAD_REQUEST, err);
