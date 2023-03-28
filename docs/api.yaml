@@ -1,0 +1,2340 @@
+openapi: 3.0.3
+info:
+  title: UniGourmet API
+  description: |-
+    Esse é oajsjasojoas
+    
+    Links úteis:
+    - [Unigourmet Repository](https://github.com/Tukozaki-Dev/Unigourmet-backend)
+    - [Unigourmet WepApp Live View](https://unigourmet.netlify.app/)
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: https://petstore3.swagger.io/api/v3
+tags:
+  - name: user
+    description: Operations about users
+  - name: coordinator
+    description: Operations about coordinators
+  - name: professor
+    description: Operations about professors
+  - name: student
+    description: Operations about students
+  - name: event_note
+    description: Operations about event notes
+  - name: course
+    description: Operations about courses
+  - name: class_group
+    description: Operations about classes group
+  - name: note
+    description: Operations about notes
+  - name: recipe
+    description: Operations about recipes
+  - name: student_recipe
+    description: Operations about recipes by student
+  - name: ingredient
+    description: Operations about ingredients
+  - name: specialty
+    description: Operations about specialties
+paths:
+  /user:
+    post:
+      tags:
+        - user
+      summary: Create user
+      description: This can only be done by the logged in user.
+      operationId: createUser
+      requestBody:
+        description: Created user object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /user/login:
+    get:
+      tags:
+        - user
+      summary: Logs user into the system
+      description: ''
+      operationId: loginUser
+      parameters:
+        - name: username
+          in: query
+          description: The user name for login
+          required: false
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: The password for login in clear text
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          headers:
+            X-Rate-Limit:
+              description: calls per hour allowed by the user
+              schema:
+                type: integer
+                format: int32
+            X-Expires-After:
+              description: date in UTC when token expires
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                type: string
+        '400':
+          description: Invalid username/password supplied
+  /user/logout:
+    get:
+      tags:
+        - user
+      summary: Logs out current logged in user session
+      description: ''
+      operationId: logoutUser
+      parameters: []
+      responses:
+        default:
+          description: successful operation
+  /user/{username}:
+    get:
+      tags:
+        - user
+      summary: Get user by user name
+      description: ''
+      operationId: getUserByName
+      parameters:
+        - name: username
+          in: path
+          description: 'The name that needs to be fetched. Use user1 for testing.'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid username supplied
+        '404':
+          description: User not found
+    put:
+      tags:
+        - user
+      summary: Update user
+      description: This can only be done by the logged in user.
+      operationId: updateUser
+      parameters:
+        - name: username
+          in: path
+          description: name that need to be deleted
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Update an existent user in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        default:
+          description: successful operation
+    delete:
+      tags:
+        - user
+      summary: Delete user
+      description: This can only be done by the logged in user.
+      operationId: deleteUser
+      parameters:
+        - name: username
+          in: path
+          description: The name that needs to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid username supplied
+        '404':
+          description: User not found
+  /user/coordinator:
+    post:
+      tags:
+        - coordinator
+      summary: Add a new coordinator
+      description: Add a new coordinator
+      operationId: addCoordinator
+      requestBody:
+        description: Create a new coordinator
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Coordinator'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Coordinator'
+        '405':
+          description: Invalid input
+    get:
+      tags:
+        - coordinator
+      summary: Find all coordinators
+      description: Returns all coordinators
+      operationId: getCoordinators
+      parameters:
+        - $ref: '#/components/parameters/offsetParam'
+        - $ref: '#/components/parameters/limitParam'
+        - $ref: '#/components/parameters/sortParam'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Coordinator'
+  /user/coordinator/{id}:
+    get:
+      tags:
+        - coordinator
+      summary: Find coordinator by ID
+      description: Returns a single coordinator
+      operationId: getCoordinatorById
+      parameters:
+        - name: id
+          in: path
+          description: ID of coordinator to return
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Coordinator'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Coordinator not founded
+    put:
+      tags:
+        - coordinator
+      summary: Update coordinator
+      description: Update coordinator.
+      operationId: updateCoordinator
+      parameters:
+        - name: id
+          in: path
+          description: Id from coordinator that need to be updated
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Update an existent coordinator
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Coordinator'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Coordinator'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Coordinator not founded
+    delete:
+      tags:
+        - coordinator
+      summary: Delete a coordinator
+      description: delete a coordinator
+      operationId: deleteCoordinator
+      parameters:
+        - name: id
+          in: path
+          description: Coordinator id to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid coordinator value        
+        '404':
+          description: Coordinator not founded
+  /user/coordinator/{id}/uploadImage:
+    post:
+      tags:
+        - coordinator
+      summary: Uploads an image
+      description: ''
+      operationId: uploadCoordinatorImage
+      parameters:
+        - name: id
+          in: path
+          description: ID of coordinator to update
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: additionalMetadata
+          in: query
+          description: Additional Metadata
+          required: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /user/professor:
+    post:
+      tags:
+        - professor
+      summary: Add a new professor
+      description: Add a new professor
+      operationId: addProfessor
+      requestBody:
+        description: Create a new professor
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Professor'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Professor'
+        '405':
+          description: Invalid input
+    get:
+      tags:
+        - professor
+      summary: Find all professors
+      description: Returns all professors
+      operationId: getProfessors
+      parameters:
+        - $ref: '#/components/parameters/offsetParam'
+        - $ref: '#/components/parameters/limitParam'
+        - $ref: '#/components/parameters/sortParam'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Professor'
+  /user/professor/{id}:
+    get:
+      tags:
+        - professor
+      summary: Find professor by ID
+      description: Returns a single professor
+      operationId: getProfessorById
+      parameters:
+        - name: id
+          in: path
+          description: ID of professor to return
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Professor'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Professor not founded
+    put:
+      tags:
+        - professor
+      summary: Update professor
+      description: Update professor.
+      operationId: updateProfessor
+      parameters:
+        - name: id
+          in: path
+          description: Id from professor that need to be updated
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Update an existent professor
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Professor'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Professor'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Professor not founded
+    delete:
+      tags:
+        - professor
+      summary: Delete a professor
+      description: delete a professor
+      operationId: deleteProfessor
+      parameters:
+        - name: id
+          in: path
+          description: Professor id to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid professor value        
+        '404':
+          description: Professor not founded
+  /user/professor/{id}/uploadImage:
+    post:
+      tags:
+        - professor
+      summary: Uploads an image
+      description: ''
+      operationId: uploadProfessorImage
+      parameters:
+        - name: id
+          in: path
+          description: ID of professor to update
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: additionalMetadata
+          in: query
+          description: Additional Metadata
+          required: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /user/student:
+    post:
+      tags:
+        - student
+      summary: Add a new student
+      description: Add a new student
+      operationId: addStudent
+      requestBody:
+        description: Create a new student
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Student'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+        '405':
+          description: Invalid input
+    get:
+      tags:
+        - student
+      summary: Find all students
+      description: Returns all students
+      operationId: getStudents
+      parameters:
+        - $ref: '#/components/parameters/offsetParam'
+        - $ref: '#/components/parameters/limitParam'
+        - $ref: '#/components/parameters/sortParam'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Student'
+  /user/student/{id}:
+    get:
+      tags:
+        - student
+      summary: Find student by ID
+      description: Returns a single student
+      operationId: getStudentById
+      parameters:
+        - name: id
+          in: path
+          description: ID of student to return
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Student not founded
+    put:
+      tags:
+        - student
+      summary: Update student
+      description: Update student.
+      operationId: updateStudent
+      parameters:
+        - name: id
+          in: path
+          description: Id from student that need to be updated
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Update an existent student
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Student'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Student not founded
+    delete:
+      tags:
+        - student
+      summary: Delete a student
+      description: delete a student
+      operationId: deleteStudent
+      parameters:
+        - name: id
+          in: path
+          description: Student id to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid student value        
+        '404':
+          description: Student not founded
+  /user/student/{id}/uploadImage:
+    post:
+      tags:
+        - student
+      summary: Uploads an image
+      description: ''
+      operationId: uploadStudentImage
+      parameters:
+        - name: id
+          in: path
+          description: ID of student to update
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: additionalMetadata
+          in: query
+          description: Additional Metadata
+          required: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /calendar/event_note:
+    post:
+      tags:
+        - event_note
+      summary: Add a new event note
+      description: Add a new event note
+      operationId: addEventNote
+      requestBody:
+        description: Create a new event note
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventNote'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventNote'
+        '405':
+          description: Invalid input
+    get:
+      tags:
+        - event_note
+      summary: Find all event notes
+      description: Returns all event notes
+      operationId: getEventNotes
+      parameters:
+        - $ref: '#/components/parameters/offsetParam'
+        - $ref: '#/components/parameters/limitParam'
+        - $ref: '#/components/parameters/sortParam'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventNote'
+  /calendar/event_note/{id}:
+    get:
+      tags:
+        - event_note
+      summary: Find event note by ID
+      description: Returns a single event note
+      operationId: getEventNoteById
+      parameters:
+        - name: id
+          in: path
+          description: ID of event note to return
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventNote'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Event note not founded
+    put:
+      tags:
+        - event_note
+      summary: Update an event note
+      description: Update an event note.
+      operationId: updateEventNote
+      parameters:
+        - name: id
+          in: path
+          description: Id from an event note that need to be updated
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Update an existent event note
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventNote'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventNote'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Event note not founded
+    delete:
+      tags:
+        - event_note
+      summary: Delete an event note
+      description: delete an event note
+      operationId: deleteEventNote
+      parameters:
+        - name: id
+          in: path
+          description: Event note id to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid event note value        
+        '404':
+          description: Event note not founded
+  /admin_management/course:
+    post:
+      tags:
+        - course
+      summary: Add a new course
+      description: Add a new course
+      operationId: addCourse
+      requestBody:
+        description: Create a new course
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Course'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        '405':
+          description: Invalid input
+    get:
+      tags:
+        - course
+      summary: Find all courses
+      description: Returns all courses
+      operationId: getCourses
+      parameters:
+        - $ref: '#/components/parameters/offsetParam'
+        - $ref: '#/components/parameters/limitParam'
+        - $ref: '#/components/parameters/sortParam'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
+  /admin_management/course/{id}:
+    get:
+      tags:
+        - course
+      summary: Find course by ID
+      description: Returns a single course
+      operationId: getCourseById
+      parameters:
+        - name: id
+          in: path
+          description: ID of course to return
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Course not founded
+    put:
+      tags:
+        - course
+      summary: Update course
+      description: Update course.
+      operationId: updateCourse
+      parameters:
+        - name: id
+          in: path
+          description: Id from course that need to be updated
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Update an existent course
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Course'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Course not founded
+    delete:
+      tags:
+        - course
+      summary: Delete a course
+      description: delete a course
+      operationId: deleteCourse
+      parameters:
+        - name: id
+          in: path
+          description: Course id to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid student value        
+        '404':
+          description: Course not founded
+  /admin_management/class_group:
+    post:
+      tags:
+        - class_group
+      summary: Add a new classGroup
+      description: Add a new classGroup
+      operationId: addClassGroup
+      requestBody:
+        description: Create a new classGroup
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClassGroup'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassGroup'
+        '405':
+          description: Invalid input
+    get:
+      tags:
+        - class_group
+      summary: Find all classesGroup
+      description: Returns all classesGroup
+      operationId: getClassesGroup
+      parameters:
+        - $ref: '#/components/parameters/offsetParam'
+        - $ref: '#/components/parameters/limitParam'
+        - $ref: '#/components/parameters/sortParam'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClassGroup'
+  /admin_management/class_group/{id}:
+    get:
+      tags:
+        - class_group
+      summary: Find classGroup by ID
+      description: Returns a single classGroup
+      operationId: getClassGroupById
+      parameters:
+        - name: id
+          in: path
+          description: ID of classGroup to return
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassGroup'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: ClassGroup not found
+    put:
+      tags:
+        - class_group
+      summary: Update classGroup
+      description: Update classGroup.
+      operationId: updateClassGroup
+      parameters:
+        - name: id
+          in: path
+          description: id that need to be updated
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Update an existent classGroup
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClassGroup'
+      responses:
+        default:
+          description: successful operation
+    delete:
+      tags:
+        - class_group
+      summary: Deletes a classGroup
+      description: delete a classGroup
+      operationId: deleteClassGroup
+      parameters:
+        - name: id
+          in: path
+          description: ClassGroup id to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid classGroup value
+  /admin_management/note:
+    post:
+      tags:
+        - note
+      summary: Add a new note
+      description: Add a new note
+      operationId: addNote
+      requestBody:
+        description: Create a new note
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Note'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note'
+        '405':
+          description: Invalid input
+    get:
+      tags:
+        - note
+      summary: Find all notes
+      description: Returns all notes
+      operationId: getNotes
+      parameters:
+        - $ref: '#/components/parameters/offsetParam'
+        - $ref: '#/components/parameters/limitParam'
+        - $ref: '#/components/parameters/sortParam'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Note'
+  /admin_management/note/{id}:
+    get:
+      tags:
+        - note
+      summary: Find note by ID
+      description: Returns a single note
+      operationId: getNoteById
+      parameters:
+        - name: id
+          in: path
+          description: ID of note to return
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Note not found
+    put:
+      tags:
+        - note
+      summary: Update note
+      description: Update note.
+      operationId: updateNote
+      parameters:
+        - name: id
+          in: path
+          description: id that need to be updated
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Update an existent note
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Note'
+      responses:
+        default:
+          description: successful operation
+    delete:
+      tags:
+        - note
+      summary: Deletes a note
+      description: delete a note
+      operationId: deleteNote
+      parameters:
+        - name: id
+          in: path
+          description: Note id to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid note value
+  /admin_management/recipe:
+    post:
+      tags:
+        - recipe
+      summary: Add a new recipe
+      description: Add a new recipe
+      operationId: addRecipe
+      requestBody:
+        description: Create a new recipe
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Recipe'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recipe'
+        '405':
+          description: Invalid input
+    get:
+      tags:
+        - recipe
+      summary: Find all recipes with optional query parameters
+      description: Returns all recipes, it can contain query parameters to filter for pagination, sorting and star rating.
+      operationId: getRecipes
+      parameters:
+        - $ref: '#/components/parameters/offsetParam'
+        - $ref: '#/components/parameters/limitParam'
+        - $ref: '#/components/parameters/sortParam'
+        - $ref: '#/components/parameters/starRatingParam'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Recipe'
+  /admin_management/recipe/{id}:
+    get:
+      tags:
+        - recipe
+      summary: Find recipe by ID
+      description: Returns a single recipe
+      operationId: getRecipeById
+      parameters:
+        - name: id
+          in: path
+          description: ID of recipe to return
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recipe'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Recipe not found
+    put:
+      tags:
+        - recipe
+      summary: Update recipe
+      description: Update recipe.
+      operationId: updateRecipe
+      parameters:
+        - name: id
+          in: path
+          description: id that need to be updated
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Update an existent recipe
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Recipe'
+      responses:
+        default:
+          description: successful operation
+    delete:
+      tags:
+        - recipe
+      summary: Deletes a recipe
+      description: delete a recipe
+      operationId: deleteRecipe
+      parameters:
+        - name: id
+          in: path
+          description: Recipe id to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid recipe value
+  /admin_management/recipe/{id}/uploadImage:
+    post:
+      tags:
+        - recipe
+      summary: Uploads an image
+      description: ''
+      operationId: uploadRecipeImage
+      parameters:
+        - name: id
+          in: path
+          description: ID of recipe to update
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: additionalMetadata
+          in: query
+          description: Additional Metadata
+          required: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /admin_management/studentRecipe:
+    post:
+      tags:
+        - student_recipe
+      summary: Add a new recipe
+      description: Add a new recipe
+      operationId: addStudentRecipe
+      requestBody:
+        description: Create a new recipe
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentRecipe'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentRecipe'
+        '405':
+          description: Invalid input
+    get:
+      tags:
+        - student_recipe
+      summary: Find all recipes with optional query parameters
+      description: Returns all recipes, it can contain query parameters to filter based on isDone, isFavorite and/or rating.
+      operationId: getRecipesByStudent
+      parameters:
+        - $ref: '#/components/parameters/offsetParam'
+        - $ref: '#/components/parameters/limitParam'
+        - $ref: '#/components/parameters/sortParam'
+        - $ref: '#/components/parameters/isDoneParam'
+        - $ref: '#/components/parameters/isFavoriteParam'
+        - $ref: '#/components/parameters/starRatingParam'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudentRecipe'
+  /admin_management/studentRecipe/{id}:
+    get:
+      tags:
+        - student_recipe
+      summary: Find recipe by ID
+      description: Returns a single recipe
+      operationId: getStudentRecipesById
+      parameters:
+        - name: id
+          in: path
+          description: ID of recipe to return
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentRecipe'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Recipe not found
+  /admin_management/studentRecipe/{id}/updateIsFavorite:
+    patch:
+      tags:
+        - student_recipe
+      summary: Update recipe favorite property
+      description: Update recipe favorite property to true or false.
+      operationId: updateStudentRecipeFavorite
+      parameters:
+        - name: id
+          in: path
+          description: id that need to be updated
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Update an existent recipe favorite property
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                isFavorite: 
+                  type: boolean
+                  example: true
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentRecipe'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Recipe not found
+  /admin_management/studentRecipe/{id}/updateIsDone:
+    patch:
+      tags:
+        - student_recipe
+      summary: Update recipe isDone property
+      description: Update recipe isDone property to true or false.
+      operationId: updateStudentRecipeIsDone
+      parameters:
+        - name: id
+          in: path
+          description: id that need to be updated
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Update an existent recipe favorite property
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                isDone: 
+                  type: boolean
+                  example: true
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentRecipe'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Recipe not found
+  /admin_management/studentRecipe/{id}/uploadImage:
+    post:
+      tags:
+        - student_recipe
+      summary: Uploads an image
+      description: ''
+      operationId: uploadStudentRecipeImage
+      parameters:
+        - name: id
+          in: path
+          description: ID of student's recipe to update
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: additionalMetadata
+          in: query
+          description: Additional Metadata
+          required: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /admin_management/ingredient:
+    post:
+      tags:
+        - ingredient
+      summary: Add a new ingredient
+      description: Add a new ingredient
+      operationId: addIngredient
+      requestBody:
+        description: Create a new ingredient
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ingredient'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ingredient'
+        '405':
+          description: Invalid input
+    get:
+      tags:
+        - ingredient
+      summary: Find all ingredients
+      description: Returns all ingredients
+      operationId: getIngredients
+      parameters:
+        - $ref: '#/components/parameters/offsetParam'
+        - $ref: '#/components/parameters/limitParam'
+        - $ref: '#/components/parameters/sortParam'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Ingredient'
+  /admin_management/ingredient/{id}:
+    get:
+      tags:
+        - ingredient
+      summary: Find ingredient by ID
+      description: Returns a single ingredient
+      operationId: getIngredientById
+      parameters:
+        - name: id
+          in: path
+          description: ID of ingredient to return
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ingredient'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Ingredient not found
+    put:
+      tags:
+        - ingredient
+      summary: Update ingredient
+      description: Update ingredient.
+      operationId: updateIngredient
+      parameters:
+        - name: id
+          in: path
+          description: id that need to be updated
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Update an existent ingredient
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ingredient'
+      responses:
+        default:
+          description: successful operation
+    delete:
+      tags:
+        - ingredient
+      summary: Deletes an ingredient
+      description: delete an ingredient
+      operationId: deleteIngredient
+      parameters:
+        - name: id
+          in: path
+          description: Ingredient id to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid ingredient value
+  /admin_management/specialty:
+    post:
+      tags:
+        - specialty
+      summary: Add a new specialty
+      description: Add a new specialty
+      operationId: addSpecialty
+      requestBody:
+        description: Create a new specialty
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Specialty'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Specialty'
+        '405':
+          description: Invalid input
+    get:
+      tags:
+        - specialty
+      summary: Find all specialties
+      description: Returns all specialties
+      operationId: getSpecialties
+      parameters:
+        - $ref: '#/components/parameters/offsetParam'
+        - $ref: '#/components/parameters/limitParam'
+        - $ref: '#/components/parameters/sortParam'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Specialty'
+  /admin_management/specialty/{id}:
+    get:
+      tags:
+        - specialty
+      summary: Find specialty by ID
+      description: Returns a single specialty
+      operationId: getSpecialtyById
+      parameters:
+        - name: id
+          in: path
+          description: ID of specialty to return
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Specialty'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Specialty not found
+    put:
+      tags:
+        - specialty
+      summary: Update specialty
+      description: Update specialty.
+      operationId: updateSpecialty
+      parameters:
+        - name: id
+          in: path
+          description: id that need to be updated
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Update an existent specialty
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Specialty'
+      responses:
+        default:
+          description: successful operation
+    delete:
+      tags:
+        - specialty
+      summary: Deletes an specialty
+      description: delete an specialty
+      operationId: deleteSpecialty
+      parameters:
+        - name: id
+          in: path
+          description: Specialty id to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid specialty value
+components:
+  parameters:
+    offsetParam:
+      in: query
+      name: offset
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+      description: The number of items to skip before starting to collect the result set.
+    limitParam:
+      in: query
+      name: limit
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 50
+        default: 20
+      description: The numbers of items to return
+    sortParam:
+      in: query
+      name: sort
+      required: false
+      schema:
+        type: string
+        enum:
+          - asc
+          - desc
+      description: >
+        Sort order:
+          * `asc` - Ascending, from A to Z
+          * `desc` - Descending, from Z to A
+    isDoneParam:
+      in: query
+      name: isDone
+      required: false
+      schema:
+        type: boolean
+        default: false
+    isFavoriteParam:
+      in: query
+      name: isFavorite
+      required: false
+      schema:
+        type: boolean
+        default: false
+    starRatingParam:
+      in: query
+      name: starRating
+      required: false
+      schema:
+        type: number
+        enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+  schemas:
+    UserBlueprint:
+      type: object
+      properties:
+        id:
+          type: string
+          example:   '507f191e810c19729de860ea'
+        name:
+          type: string
+          minLength: 3
+          example: 'Fulano de Tal'
+        email:
+          type: string
+          format: email
+          example: 'john@email.com'
+        phone:
+          type: integer
+          minLength: 10
+          pattern: '^\d{2}-\d{4}-\d{4}$'
+          example: '11-90000-0000'
+      required:
+        - id
+        - name
+        - email
+      xml:
+        name: userblueprint
+    User:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/UserBlueprint'
+        username:
+          type: string
+          pattern: '^[a-zA-Z\s]*$'
+          example: theUser
+        password:
+          type: string
+          format: password
+          minimum: 8
+          maximum: 20
+          example: 'Pass12345'
+        role:
+          type: string
+          example: 'professor'
+          enum: 
+            - coordinator
+            - professor
+            - student
+      required:
+        - username
+        - password
+        - role      
+      xml:
+        name: user
+    Coordinator:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/UserBlueprint'
+        imagePath:
+          type: string
+          format: base64
+      xml:
+        name: coordinator
+    Professor:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/UserBlueprint'
+        internalCode: 
+          type: string
+          minLength: 8
+          maxLength: 8
+          pattern: '^A-Za-z0-9*$'
+          example: 'RC00123A'
+        imagePath:
+          type: string
+          format: base64
+        coursesListing:
+          $ref: '#/components/schemas/CoursesListing'
+        specialties:
+          $ref: '#/components/schemas/Specialties'
+        classesGroup:
+          $ref: '#/components/schemas/ClassesGroup'
+      required:
+        - internalCode
+        - specialties
+      xml:
+        name: professor
+    Student:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/UserBlueprint'
+        ra:
+          type: string
+          minLength: 8
+          maxLength: 8
+          pattern: '^A-Za-z0-9*$'
+          example: 'RA12345A'
+        imagePath:
+          type: string
+          format: base64
+        semester:
+          type: integer
+          minimum: 1
+          maximum: 8
+          example: 1
+        classGroup:
+          $ref: '#/components/schemas/ClassGroupFragment'
+      required:
+        - ra
+        - semester    
+      xml:
+        name: student
+    Course:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '507f191e810c19729de860ea'
+        name:
+          type: string
+          minLength: 3
+          pattern: '^[a-zA-Z\u00C0-\u00FF]*$'
+          example: 'Cozinha Mediterrânea'
+        courseCode:
+          type: string
+          minLength: 8
+          maxLength: 8
+          pattern: '^A-Za-z0-9*$'
+          example: 'CC123ABC'
+        semester:
+          type: integer
+          minimum: 1
+          maximum: 8
+          example: 1
+        numberOfLessons:
+          type: integer
+          minimum: 16
+          maximum: 48
+          example: 32
+        lessons:
+          $ref: '#/components/schemas/Lessons'
+        courseRecipes:
+          $ref: '#/components/schemas/CourseRecipes'
+        courseProfessors:
+          $ref: '#/components/schemas/AllProfessorsFragment'
+      required:
+        - id
+        - name
+        - courseCode
+        - semester
+        - numberOfLessons
+      xml:
+        name: course
+    ClassGroup:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '507f191e810c19729de860ea'
+        name:
+          type: string
+          minLength: 3
+          pattern: '^[a-zA-Z\u00C0-\u00FF]*$'
+          example: 'Cozinha Mediterrânea'
+        classGroupCode:
+          type: string
+          minLength: 8
+          maxLength: 8
+          pattern: '^A-Za-z0-9*$'
+          example: 'CC123ABC'
+        semester:
+          type: integer
+          minimum: 1
+          maximum: 8
+          example: 1
+        shift:
+          type: string
+          example: 'vespertino'
+          enum: 
+            - matutino
+            - vespertino
+            - nortuno
+            - EAD
+        category:
+          type: string
+          example: 'presencial'
+          enum: 
+            - presencial
+            - semi-presencial
+            - EAD
+        coursesListing:
+          $ref: '#/components/schemas/CoursesListing'
+        courseStudents:
+          $ref: '#/components/schemas/AllStudentsFragment'
+        courseProfessors:
+          $ref: '#/components/schemas/AllProfessorsFragment'
+      required:
+        - id
+        - name
+        - classGroupCode
+        - semester
+        - shift
+        - category
+      xml:
+        name: classgroup
+    Recipe:
+      type: object
+      properties:
+        recipeMain:
+          type: object
+          properties:
+            id:
+              type: string
+              example: '507f191e810c19729de860ea'
+            name:
+              type: string
+              minLength: 3
+              pattern: '^[a-zA-Z\u00C0-\u00FF]*$'
+              example: 'Mjadra'
+            rating:
+              type: integer
+              minimum: 0
+              maximum: 5
+              example: 5
+            imagePath:
+              type: string
+              format: base64
+            description:
+              type: string
+              minLength: 3
+              pattern: '^[a-zA-Z\u00C0-\u00FF]*$'
+              example: 'Descrição da receita aqui'
+            course:
+              $ref: '#/components/schemas/CourseFragment'
+            region:
+              type: string
+              minLength: 3
+              pattern: '^[a-zA-Z\u00C0-\u00FF]*$'
+              example: 'Líbano'
+            prepDuration:
+              type: string
+              minLength: 2
+              maxLength: 4 
+              pattern: 'A-Za-z0-9*$'
+              example: '1h30'
+            yeldis:
+              type: integer
+              format: int8
+              minimum: 1
+              example: 6
+            prevPrepare:
+              type: string
+              pattern: '^[a-zA-Z\u00C0-\u00FF]*$'
+              example: 'Antes de começar o preparo, separe todos os ingredientes em potinhos.'
+            chefsNote:
+              type: string
+              pattern: '^[a-zA-Z\u00C0-\u00FF]*$'
+              example: 'Dica: Deixar a lentilha de molho por no mínimo 12 horas'
+            harmonization:
+              type: string
+              pattern: '^[a-zA-Z\u00C0-\u00FF]*$'
+              example: 'Vinho Bourdeaux'
+          required:
+          - id
+          - name
+          - description
+          - region
+          - prepDuration
+          - yeldis    
+        recipeSteps:
+          type: object
+          properties:
+            section:
+              type: object
+              properties:
+                sectionName:
+                  type: string
+                  pattern: 'A-Za-z0-9*$'
+                  example: 'Sessão 1'
+                ingredients:
+                  type: object
+                  properties: 
+                    ingredientGroup: 
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/RecipeIngredient'
+                      minItems: 1
+                prepInstructions:
+                  type: object
+                  properties:
+                    instructionSteps:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Step'
+                      minItems: 1  
+            plateUp:
+              type: array
+              items:
+                $ref: '#/components/schemas/Step'
+              minItems: 1  
+            equipUtensils:
+              type: array
+              items:
+                type: string
+              minItems: 1  
+          required:
+          - section
+          - plateUp     
+          xml:
+            name: recipe
+    StudentRecipe:
+      type: object
+      properties:
+        recipe:
+          type: object
+          properties:
+            id:
+              type: string
+              example: '507f191e810c19729de860ea'
+            name:
+              type: string
+              minLength: 3
+              pattern: '^[a-zA-Z\u00C0-\u00FF]*$'
+              example: 'Mjadra'
+            course:
+              $ref: '#/components/schemas/CourseFragment'
+            rating:
+              type: integer
+              minimum: 0
+              maximum: 5
+              example: 5
+        id:
+          type: string
+          example: '507f191e810c19729de860ea'
+        isDone:
+          type: boolean
+          default: false
+        isFavorite:
+          type: boolean
+          default: false
+      required:
+          - recipe
+          - id
+          - isDone
+          - isFavorite      
+      xml:
+        name: studentrecipe
+    Note:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '507f191e810c19729de860ea'
+        course:
+          $ref: '#/components/schemas/CourseFragment'
+        region:
+          type: string
+          pattern: '^[a-zA-Z\u00C0-\u00FF]*$'
+          example: 'Mediterrâneo'
+        professor:
+          $ref: '#/components/schemas/ProfessorFragment'
+        recipe:
+          $ref: '#/components/schemas/RecipeFragment'
+        note:
+           type: string
+           pattern: '^[a-zA-Z\u00C0-\u00FF]*$'
+           example: 'Isso é uma nota sobre a aula de cozinha moderna...'
+      required:
+          - id
+          - note
+      xml:
+        name: note
+    EventNote:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '507f191e810c19729de860ea'
+        course:
+          $ref: '#/components/schemas/CourseFragment'
+        professor:
+          $ref: '#/components/schemas/ProfessorFragment'
+        note:
+           type: string
+           pattern: '^[a-zA-Z\u00C0-\u00FF]*$'
+           example: 'Estudar para a prova, vai cair tudo da apostila da página 1 à 8'
+        eventDate:
+          type: string
+          format: date
+          example: '27/03/2023'
+        eventType:
+          type: string
+          example: 'Prova'
+          enum:
+            - Prova
+            - Trabalho
+            - Lição de casa
+            - Outro
+        isPublic:
+          type: boolean
+      required:
+          - id
+          - course
+          - professor
+          - eventDate
+          - eventType
+          - isPublic
+      xml:
+        name: eventnote
+    Step:
+      type: object
+      properties:
+        step:
+          type: integer
+          format: int8
+          minimum: 1
+          example: 1
+        description:
+          type: string
+          minLength: 3
+          pattern: '^[a-zA-Z\u00C0-\u00FF]*$'
+          example: 'Descrevendo o passo 1'
+      required:
+          - step
+          - description    
+      xml:
+        name: step
+    CourseFragment:
+      type: object
+      properties:
+        id:
+            type: string
+            example: '507f191e810c19729de860ea'
+        name:
+          type: string
+          minLength: 3
+          pattern: '^[a-zA-Z\u00C0-\u00FF]*$'
+          example: 'Cozinha Francesa'
+      required:
+          - id
+          - name    
+      xml:
+        name: coursefragment
+    CoursesListing:
+      type: array
+      minItems: 1
+      items: 
+        type: object
+        properties:
+          id:
+            type: string
+            example: '507f191e810c19729de860ea'
+          name:
+            type: string
+            minLength: 3
+            pattern: '^[a-zA-Z\u00C0-\u00FF]*$'
+            example: 'Cozinha Mediterrânea'
+        required:
+          - id
+          - name    
+      xml:
+        name: courseslisting
+    Specialty:
+      type: object
+      properties:
+        id:
+            type: string
+            example: '507f191e810c19729de860ea'
+        name:
+          type: string
+          minLength: 3
+          pattern: '^[a-zA-Z\u00C0-\u00FF]*$'
+          example: 'Peixes'
+      required:
+          - id
+          - name     
+      xml:
+        name: specialty
+    Specialties:
+      type: array
+      items: 
+        $ref: '#/components/schemas/Specialty'
+      minItems: 1  
+      xml:
+        name: specialties
+    IngredientFragment:
+      type: object
+      properties:
+        id:
+            type: string
+            example: '507f191e810c19729de860ea'
+        name:
+          type: string
+          minLength: 2
+          pattern: '^[a-zA-Z\u00C0-\u00FF]*$'
+          example: 'Batata' 
+      required:
+          - id
+          - name     
+      xml:
+        name: ingredientfragment
+    Ingredient:
+      type: object
+      properties:
+        fragment: 
+          $ref: '#/components/schemas/IngredientFragment'
+        unit: 
+          type: string
+          example: 'quilo'
+          enum:
+            - quilo
+            - litro
+            - dente
+            - ramo
+            - pitada
+            - cabeça
+            - unidade
+            - fatia
+            - talo
+            - folha
+            - pedaço
+            - grama
+            - ml
+            - maço
+            - colher de chá
+            - colher de sopa
+            - xícara
+      required:
+          - unit      
+      xml:
+        name: ingredient
+    RecipeIngredient:
+      type: object
+      properties:
+        ingredient:
+          $ref: '#/components/schemas/Ingredient'
+        quantity:
+          type: number
+          format: float
+          example: 1,5
+      required:
+          - ingredient
+          - quantity  
+      xml:
+        name: recipeingredient     
+    ClassGroupFragment:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '507f191e810c19729de860ea'
+        name:
+          type: string
+          minLength: 3
+          pattern: '^[a-zA-Z\u00C0-\u00FF]*$'
+          example: 'TURMA ABC'
+      required:
+          - id
+          - name    
+      xml:
+        name: classgroupfragment
+    ClassesGroup:
+      type: array
+      items:
+        $ref: '#/components/schemas/ClassGroupFragment'
+      minItems: 1  
+      xml:
+       name: classesgroup
+    RecipeFragment:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '507f191e810c19729de860ea'
+        name:
+          type: string
+          minLength: 3
+          pattern: '^[a-zA-Z\u00C0-\u00FF]*$'
+          example: 'Mjadra'
+      required:
+          - id
+          - name    
+      xml:
+        name: recipefragment
+    Lesson:
+      type: object
+      properties:
+        lessonName:
+          type: string
+          minLength: 5
+          pattern: 'A-Za-z0-9*$'
+          example: 'Aula 1'
+        lessonRecipes:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecipeFragment'
+          minItems: 1  
+      required:
+          - lessonName
+          - lessonRecipes
+      xml:
+        name: lesson
+    Lessons:
+      type: array
+      items: 
+        $ref: '#/components/schemas/Lesson'
+      minItems: 1  
+      xml:
+        name: lessons
+    CourseRecipes:
+      type: array
+      items: 
+        $ref: '#/components/schemas/RecipeFragment'
+      minItems: 1
+      xml:
+        name: courserecipes
+    ProfessorFragment:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '507f191e810c19729de860ea'
+        name:
+          type: string
+          minLength: 3
+          pattern: '^[a-zA-Z\u00C0-\u00FF]*$'
+          example: 'John Doe'
+      required:
+          - id
+          - name    
+      xml:
+        name: professorfragment
+    AllProfessorsFragment:
+      type: array
+      items: 
+        $ref: '#/components/schemas/ProfessorFragment'
+      minItems: 1  
+      xml:
+        name: allprofessorsfragment
+    StudentFragment:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '507f191e810c19729de860ea'
+        name:
+          type: string
+          minLength: 3
+          pattern: '^[a-zA-Z\u00C0-\u00FF]*$'
+          example: 'Mary Jane Watson'
+      required:
+          - id
+          - name     
+      xml:
+        name: professorfragment
+    AllStudentsFragment:
+      type: array
+      items: 
+        $ref: '#/components/schemas/StudentFragment'
+      minItems: 1  
+      xml:
+        name: allstudentsfragment
+    ApiResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        type:
+          type: string
+        message:
+          type: string
+      xml:
+        name: '##default'
